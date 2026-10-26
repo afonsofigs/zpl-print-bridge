@@ -1,0 +1,62 @@
+# zpl-print-bridge configuration: key = value, one per line.
+# Copy to ~/.config/zpl-print-bridge/config.
+# A missing key or an empty value uses the default shown.
+# A comment starts with # at the start of a line or after a space. Put a value
+# in quotes to keep a # in it.
+
+# Address that accepts ZPL jobs: an IP address or localhost, and a port.
+# Keep it on 127.0.0.1 unless other computers must print: a network address
+# accepts jobs from every device that reaches it, with no authentication.
+listen = 127.0.0.1:9100
+
+# CUPS queue of the label printer. If empty, set archive_dir: jobs are then
+# only archived.
+printer =
+
+# tspl: send a TSPL job to a raw queue. For printers that speak TSPL.
+# pdf:  send a PDF to a queue that has the printer's own CUPS driver.
+mode = tspl
+
+# Extra lp options, separated by spaces. Each one is passed as -o <option>.
+# In pdf mode, set the paper size, for example: lp_options = media=w288h432
+lp_options =
+
+# Printer resolution: 152, 203, 300 or 600. In tspl mode it must also be the
+# resolution the labels are designed for, because ZPL positions are in dots.
+dpi = 203
+
+# Label size, 10-300 mm wide and 10-600 mm high, at most 25 million dots.
+# Content outside this size is cut at the right and bottom.
+label_width_mm = 101.6
+label_height_mm = 152.4
+
+# TSPL job settings.
+# tspl_gap_mm: 0-30, the gap between labels.
+# tspl_speed: 0-15; 0 leaves the printer's speed.
+# tspl_density: 0-15; empty leaves the printer's density.
+# tspl_direction: 0 or 1. Changing it turns the printout 180 degrees.
+tspl_gap_mm = 3
+tspl_speed = 4
+tspl_density =
+tspl_direction = 1
+
+# Folder that keeps the .zpl and .pdf of every rendered job. A job that fails to
+# render keeps only its .zpl. Rejected jobs (HTTP, too large, incomplete) are
+# not kept. The labels contain names and addresses, and the folder is never
+# cleaned. Empty: no archive.
+archive_dir =
+
+# Desktop notification per job, with notify-send.
+notify = false
+
+# Limits.
+# max_job_bytes: at most 16777216.
+# max_labels: 1-500, copies (^PQ) included. Large labels allow fewer: the
+# labels of one job must fit in 128 MB of memory.
+# read_timeout: 100ms-5m, as a duration such as 30s or 2m. A job ends when the
+# sender closes the connection, or after read_timeout without new data. Then
+# the labels up to the last ^XZ print. A connection is closed after twice
+# read_timeout, or after 1 minute if that is longer.
+max_job_bytes = 16777216
+max_labels = 50
+read_timeout = 30s

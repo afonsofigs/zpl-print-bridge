@@ -1,0 +1,23 @@
+[Unit]
+Description=zpl-print-bridge: print ZPL labels on a non-ZPL printer
+Documentation=https://github.com/afonsofigs/zpl-print-bridge
+
+[Service]
+ExecStart=%h/.local/bin/zpl-print-bridge serve
+Restart=on-failure
+RestartSec=3
+# Exit status 78 is a configuration error. systemd does not restart the service after it.
+RestartPreventExitStatus=78
+# Each job renders in a child process limited to 512 MB. This caps the whole service.
+MemoryMax=1G
+MemorySwapMax=0
+# If the kernel stops a child process for memory, only that job fails.
+OOMPolicy=continue
+# On stop, only the main process gets the signal. It finishes the jobs it has
+# received, including their render and lp processes, before it exits.
+KillMode=mixed
+# Up to 4 jobs can be in progress, each up to 4 minutes to render and 1 to submit.
+TimeoutStopSec=25min
+
+[Install]
+WantedBy=default.target
